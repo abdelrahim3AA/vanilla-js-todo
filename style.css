@@ -332,11 +332,6 @@ h1 {
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
     margin-top: 30px;
     border-top: 3px solid var(--primary-color);
-    display: ac; /* Hidden by default until edit is clicked */
-}
-
-.static-edit-section.active {
-    display: block; /* Show when active */
 }
 
 .static-edit-form {
@@ -365,10 +360,6 @@ h1 {
 .static-edit-section h3 {
     color: wheat;
     margin-bottom: 15px;
-}
-
-#currentEditId {
-    display: none;
 }
 
 .content-wrapper {

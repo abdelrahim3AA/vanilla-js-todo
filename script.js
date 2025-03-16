@@ -1,52 +1,56 @@
-let tasks = [
-    {
-        "title": "Complete the project proposal", 
-        "date": "03-06-2025",
-        "completed": true
-    },
-    {
-        "title": "Make some diner for alsouhour", 
-        "date": "03-06-2025",
-        "completed": false
-    },
-    {
-        "title": "Go to the maghrep's prayer", 
-        "date": "03-06-2025",
-        "completed": true
-    },
-    {
-        "title": "Finsh my tasks today", 
-        "date": "03-06-2025",
-        "completed": true
-    }
-]; 
+let tasks = []; 
 
+tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+// Show all tasks
 let todoList = document.getElementById("todo-list")
 todoList.innerHTML = ""
+updateLocalStorage()
+renderTasks()
 
-getAllTasks()
-
-// 2 - Create a new task 'C'
-document.getElementById("add-btn").addEventListener("click", function () {
-    let newTask = document.getElementById("todo-input").value
-    tasks.push({
-        "title": newTask, 
-        "date": "03-06-2025",
-        "completed": true
-    }); 
-    getAllTasks();
-});
-
-
-
-function getAllTasks()
+// To be able to swaping between the filters
+let currentFilter = "All"
+function setFilter(filter)
 {
-    todoList.innerHTML = ""
-    for (task of tasks) {
+    currentFilter = filter;
+    updateLocalStorage()
+    renderTasks(filter); // تحديث المهام بناءً على الفلتر المحدد
+
+    // إزالة الـ active من جميع الأزرار وإضافته للزر المحدد فقط
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+    // إضافة `active` للزر النشط فقط
+    document.querySelector(`.filter-btn[onclick="setFilter('${filter}')"]`).classList.add("active");
+}
+
+// 1 - Rendering all tasks on seceific filter
+function renderTasks(filter = "All")
+{
+    todoList.innerHTML = ""; // تفريغ القائمة قبل إعادة ملئها
+    let filteredTasks = tasks;
+
+    // تطبيق الفلتر المطلوب
+    if (filter === "Active") {
+        filteredTasks = tasks.filter(task => !task.completed);
+    } else if (filter === "Completed") {
+        filteredTasks = tasks.filter(task => task.completed);
+    } else if (filter === "Today") { 
+        let now = new Date();
+        let year = now.getFullYear();
+        let month = String(now.getMonth() + 1).padStart(2, "0");
+        let day = String(now.getDate()).padStart(2, "0");
+        
+        const today = `${year}-${month}-${day}`; // Get local YYYY-MM-DD format    
+        filteredTasks = tasks.filter(task => task.date.startsWith(today)); 
+    }
+    // إنشاء قائمة المهام بناءً على الفلتر المحدد
+    filteredTasks.forEach((task, index) => {
         todoList.innerHTML += `
         <li class="todo-item ${task.completed ? 'completed' : ''}">
             <div class="todo-content">
-                <span class="todo-text">${task.title}</span>
+                <span class="todo-text update-title">${task.title}</span>
                 <div class="todo-date">
                     <span class="calendar-icon">
                         <!-- Mini calendar icon -->
@@ -57,15 +61,109 @@ function getAllTasks()
                             <line x1="3" y1="10" x2="21" y2="10"></line>
                         </svg>
                     </span>
-                    <span class="todo-timestamp">Due: March 20, 2025</span>
+                    <span class="todo-timestamp">${task.date}</span>
                 </div>
             </div>
             <div class="todo-actions">
-                <button class="action-btn action-btn-complete" aria-label="Mark as complete">✓</button>
-                <button class="action-btn action-btn-edit" aria-label="Edit task">✎</button>
-                <button class="action-btn action-btn-delete" aria-label="Delete task">×</button>
+                ${task.completed  
+                    ? `<button onclick='toggleTaskCompletion(${index})' class="action-btn action-btn-complete" aria-label="Mark as uncomplete">↺</button>` 
+                    : `<button onclick="toggleTaskCompletion(${index})" class="action-btn action-btn-complete" aria-label="Mark as complete">✓</button>`  
+                } 
+                <button onclick="updateTask(${index})" class="action-btn update-task action-btn-edit" aria-label="Edit task">✎</button>
+                <button onclick="deleteTask(${index})" class="action-btn delete-task action-btn-delete" id="delete-btn" aria-label="Delete task">×</button>
             </div>
-        </li>
-        `                
+        </li>`;
+    });
+}
+
+// 2 - Create Task 'C'
+document.getElementById("add-btn").addEventListener("click", function () {
+    let newTask = document.getElementById("todo-input").value
+    tasks.push({
+        "title": newTask, 
+        "date": getCurrentFormattedDate(),
+        "completed": false
+    }); 
+    updateLocalStorage()
+    renderTasks();
+});
+
+// 3 - Update Task 'U'
+function updateTask(index)
+{ 
+    // Get the title from the current element
+    let taskTitle = document.getElementsByClassName("update-title")[index].textContent; 
+    
+    // Show the title in edit input field for editing
+    document.getElementById("edit-input").value = taskTitle; 
+    
+    // When clicking the submit button
+    document.getElementById("edit-submit-btn").onclick = function () {
+        let newTaskTitle = document.getElementById("edit-input").value;
+        let newTaskDate = document.getElementById("edit-date-input")?.value; // جلب التاريخ من حقل الإدخال
+        
+        // Update The Title
+        tasks[index].title = newTaskTitle;
+        
+        
+        // Check if ["There is Date", "Valid Date", "Not Equal To The Prev Date"]
+        if (newTaskDate && !isNaN(Date.parse(newTaskDate)) && newTaskDate !== tasks[index].date) {
+            tasks[index].date = newTaskDate;
+        }
+
+        // Call update local storage methode for listen to updating
+        updateLocalStorage()
+
+        // Make the edit input empty after editing
+        document.getElementById("edit-input").value = ""
+        
+        // Updating UI
+        renderTasks();
+
+    };
+}
+
+// 4 - Delete Task 'D'
+function deleteTask(index)
+{
+    // Get the title for the current task for show it in alert message
+    let taskTitle = document.getElementsByClassName("update-title")[index].textContent;
+    
+    // Prompt alert message for the user to confirm the deleting
+    let action = confirm("You Are Sure To Delete - " + taskTitle)
+
+    // Chick if the action is true or false - delete the task by "Splice Function if the action is true" - Updating the UI
+    if (action) {
+        tasks.splice(index, 1);
+        updateLocalStorage()
+        renderTasks();
     }
+}
+
+// 5 - Toggle Tasks Completion [true, false]
+function toggleTaskCompletion(index)
+{
+    let task = tasks[index]
+    task.completed = !task.completed;
+    updateLocalStorage()
+    renderTasks(currentFilter); // تحديث القائمة بناءً على الفلتر الحالي
+}
+
+function updateLocalStorage()
+{
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+
+function getCurrentFormattedDate()
+{
+    let now = new Date(); 
+    let year = now.getFullYear(); 
+    let month = String(now.getMonth() + 1).padStart(2, "0"); 
+    let day = String(now.getDate()).padStart(2, "0"); 
+    let hours = String(now.getHours()).padStart(2, "0"); 
+    let minutes = String(now.getMinutes()).padStart(2, "0"); 
+    let seconds = String(now.getSeconds()).padStart(2, "0"); 
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }

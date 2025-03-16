@@ -36,17 +36,17 @@
                     </span>
                     <input type="text" id="todo-input" placeholder="Add a new task..." aria-label="Add a new task">
                 </div>
-                <input type="date" class="date-picker" aria-label="Select due date">
-                <button class="btn btn-add">Add Task</button>
+                <button class="btn btn-add" id="add-btn">Add Task</button>
             </div>
 
             <!-- Filters -->
             <div class="filters">
-                <button class="filter-btn active">All</button>
-                <button class="filter-btn">Active</button>
-                <button class="filter-btn">Today</button>
-                <button class="filter-btn">Completed</button>
+                <button onclick="setFilter('All')" class="filter-btn active">All</button>
+                <button onclick="setFilter('Active')" class="filter-btn">Active</button>
+                <button onclick="setFilter('Today')" class="filter-btn">Today</button>
+                <button onclick="setFilter('Completed')" class="filter-btn">Completed</button>
             </div>
+
 
             <!-- Todo list -->
             <ul class="todo-list" id="todo-list">
@@ -76,15 +76,15 @@
 
             </ul>
             <!-- Static Edit Form at bottom -->
-            <div class="static-edit-section" id="editSection">
+            <div class="static-edit-section">
                 <h3>Edit Task</h3>
-                <form class="static-edit-form" id="staticEditForm">
-                    <input type="hidden" id="currentEditId">
-                    <input type="text" class="static-edit-input" id="staticEditInput" placeholder="Edit task..." aria-label="Edit task">
-                    <input type="date" class="date-picker" id="staticEditDate" aria-label="Edit due date">
-                    <button class="btn btn-save" type="submit">Save Changes</button>
+                <div class="static-edit-form">
+                    <input type="hidden" >
+                    <input type="text" class="static-edit-input"  id="edit-input" placeholder="Edit task..." aria-label="Edit task">
+                    <input type="date" class="date-picker" id="edit-date-input" aria-label="Edit due date">
+                    <button class="btn btn-save" id="edit-submit-btn">Save Changes</button>
                     <button class="btn btn-delete" type="button" id="cancelEdit">Cancel</button>
-                </form>
+                </div>
             </div>
         </div>
     </body>
