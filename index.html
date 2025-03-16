@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+    <body>
+        <div class="container content-wrapper">
+            <header>
+                <h1>
+                    <span class="app-title-icon">
+                        <!-- Calendar icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </span>
+                    Todo App
+                </h1>
+                <p class="app-description">Organize your tasks with ease</p>
+            </header>
+
+            <!-- Add new todo form -->
+            <div class="input-group">
+                <div class="input-wrapper">
+                    <span class="input-icon">
+                        <!-- Task icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 11l3 3L22 4"></path>
+                            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path>
+                        </svg>
+                    </span>
+                    <input type="text" id="todo-input" placeholder="Add a new task..." aria-label="Add a new task">
+                </div>
+                <input type="date" class="date-picker" aria-label="Select due date">
+                <button class="btn btn-add">Add Task</button>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters">
+                <button class="filter-btn active">All</button>
+                <button class="filter-btn">Active</button>
+                <button class="filter-btn">Today</button>
+                <button class="filter-btn">Completed</button>
+            </div>
+
+            <!-- Todo list -->
+            <ul class="todo-list" id="todo-list">
+                <!-- Regular todo item (Read) -->
+                <li class="todo-item">
+                    <div class="todo-content">
+                        <span class="todo-text">Complete the project proposal</span>
+                        <div class="todo-date">
+                            <span class="calendar-icon">
+                                <!-- Mini calendar icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                            </span>
+                            <span class="todo-timestamp">Due: March 20, 2025</span>
+                        </div>
+                    </div>
+                    <div class="todo-actions">
+                        <button class="action-btn action-btn-complete" aria-label="Mark as complete">✓</button>
+                        <button class="action-btn action-btn-edit" aria-label="Edit task">✎</button>
+                        <button class="action-btn action-btn-delete" aria-label="Delete task">×</button>
+                    </div>
+                </li>
+
+            </ul>
+            <!-- Static Edit Form at bottom -->
+            <div class="static-edit-section" id="editSection">
+                <h3>Edit Task</h3>
+                <form class="static-edit-form" id="staticEditForm">
+                    <input type="hidden" id="currentEditId">
+                    <input type="text" class="static-edit-input" id="staticEditInput" placeholder="Edit task..." aria-label="Edit task">
+                    <input type="date" class="date-picker" id="staticEditDate" aria-label="Edit due date">
+                    <button class="btn btn-save" type="submit">Save Changes</button>
+                    <button class="btn btn-delete" type="button" id="cancelEdit">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </body>
+    <script src="script.js"></script>
+</html>
